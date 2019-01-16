@@ -1,0 +1,49 @@
+plugins {
+    id 'net.saliman.cobertura' version '2.3.1'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+
+
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
+
+}
+
+jar {
+    from {
+
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        
+    }
+
+    manifest {
+        attributes 'Main-Class': 'kr.co.shineware.nlp.komoran.run.KomoranConsoleRunner'
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
+dependencies {
+    compile 'com.github.shineware:commons:1.0.1'
+    compile 'com.github.shineware:aho-corasick:1.0.9'
+    testCompile 'junit:junit:4.12'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2'
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
